@@ -28,19 +28,25 @@
             justify-content: center;
             gap: 20px;
             margin-bottom: 20px;
+            height: 100px;
         }
         .ball {
-            width: 80px;
-            height: 80px;
-            background-color: red;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ffcc00, #ff9900);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .highlighted {
+            background-color: #e63946 !important;
+            color: white !important;
         }
         .bingo-container {
             display: flex;
@@ -76,6 +82,7 @@
             font-weight: bold;
             cursor: pointer;
             border-radius: 16px;
+            transition: background-color 0.3s ease;
         }
         .called {
             background-color: #e63946;
@@ -127,33 +134,21 @@
             O: Array.from({length: 15}, (_, i) => i + 61)
         };
         
-        function generateBingoBoard() {
-            bingoBoard.innerHTML = '';
-            for (let letter in columns) {
-                columns[letter] = columns[letter].sort(() => 0.5 - Math.random());
-            }
-            
-            Object.keys(columns).forEach((letter, colIdx) => {
-                columns[letter].slice(0, 5).forEach((num, rowIdx) => {
-                    let cell = document.createElement('div');
-                    cell.classList.add('cell');
-                    cell.innerText = num;
-                    cell.onclick = () => selectNumber(letter, num);
-                    if (colIdx === 2 && rowIdx === 2) {
-                        cell.innerText = "FREE";
-                        cell.classList.add('free-space');
-                    }
-                    bingoBoard.appendChild(cell);
-                });
-            });
-        }
-
         function selectNumber(letter, num) {
             if (!lastCalledNumbers.some(n => n.letter === letter && n.number === num)) {
                 lastCalledNumbers.unshift({ letter, number: num });
                 if (lastCalledNumbers.length > 3) lastCalledNumbers.pop();
                 updateLastCalled();
             }
+            highlightCell(letter, num);
+        }
+        
+        function highlightCell(letter, num) {
+            document.querySelectorAll('.cell').forEach(cell => {
+                if (cell.innerText == num) {
+                    cell.classList.add('highlighted');
+                }
+            });
         }
 
         function updateLastCalled() {
@@ -180,6 +175,13 @@
             generateBingoBoard();
         }
         
+        function generateBingoBoard() {
+            bingoBoard.innerHTML = '';
+            Object.keys(columns).forEach(letter => {
+                columns[letter] = columns[letter].sort(() => 0.5 - Math.random());
+            });
+        }
+
         generateBingoBoard();
     </script>
 </body>
