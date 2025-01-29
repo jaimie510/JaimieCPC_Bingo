@@ -57,7 +57,7 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 16px;
-            width: 560px;
+            width: 700px;
             font-size: 38px;
             font-weight: bold;
             color: #1f4e79;
@@ -65,23 +65,23 @@
         }
         .bingo-board {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 16px;
-            width: 560px;
+            grid-template-columns: repeat(5, 15);
+            gap: 5px;
+            width: 700px;
             margin: auto;
         }
         .cell {
-            width: 96px;
-            height: 96px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: white;
-            border: 3px solid #1f4e79;
-            font-size: 32px;
+            border: 2px solid #1f4e79;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            border-radius: 16px;
+            border-radius: 10px;
             transition: background-color 0.3s ease;
         }
         .called {
@@ -103,6 +103,22 @@
             border: none;
             border-radius: 8px;
         }
+        .bingo-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 100px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+        .show-bingo {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -121,68 +137,16 @@
     </div>
     <button class="reset-btn" onclick="resetBoard()">Reset Game</button>
     <button class="reset-btn" onclick="autoSelectNumber()">Auto Select</button>
+    <button class="reset-btn" onclick="showBingo()">Bingo!</button>
+    <div class="bingo-message" id="bingoMessage">BINGO!</div>
 
     <script>
-        const bingoBoard = document.getElementById('bingoBoard');
-        const lastCalledContainer = document.getElementById('lastCalledContainer');
-        let lastCalledNumbers = [];
-        const columns = {
-            B: Array.from({length: 15}, (_, i) => i + 1),
-            I: Array.from({length: 15}, (_, i) => i + 16),
-            N: Array.from({length: 15}, (_, i) => i + 31),
-            G: Array.from({length: 15}, (_, i) => i + 46),
-            O: Array.from({length: 15}, (_, i) => i + 61)
-        };
-        
-        function selectNumber(letter, num) {
-            if (!lastCalledNumbers.some(n => n.letter === letter && n.number === num)) {
-                lastCalledNumbers.unshift({ letter, number: num });
-                if (lastCalledNumbers.length > 3) lastCalledNumbers.pop();
-                updateLastCalled();
-            }
-            highlightCell(letter, num);
+        function showBingo() {
+            document.getElementById('bingoMessage').classList.add('show-bingo');
+            setTimeout(() => {
+                document.getElementById('bingoMessage').classList.remove('show-bingo');
+            }, 3000);
         }
-        
-        function highlightCell(letter, num) {
-            document.querySelectorAll('.cell').forEach(cell => {
-                if (cell.innerText == num) {
-                    cell.classList.add('highlighted');
-                }
-            });
-        }
-
-        function updateLastCalled() {
-            lastCalledContainer.innerHTML = '';
-            lastCalledNumbers.forEach((item, index) => {
-                let ball = document.createElement('div');
-                ball.classList.add('ball');
-                ball.innerText = `${item.letter}${item.number}`;
-                ball.style.transform = `scale(${1 - index * 0.2})`;
-                lastCalledContainer.appendChild(ball);
-            });
-        }
-        
-        function autoSelectNumber() {
-            let letters = Object.keys(columns);
-            let letter = letters[Math.floor(Math.random() * letters.length)];
-            let num = columns[letter].find(n => !lastCalledNumbers.some(c => c.number === n));
-            if (num) selectNumber(letter, num);
-        }
-        
-        function resetBoard() {
-            lastCalledNumbers = [];
-            updateLastCalled();
-            generateBingoBoard();
-        }
-        
-        function generateBingoBoard() {
-            bingoBoard.innerHTML = '';
-            Object.keys(columns).forEach(letter => {
-                columns[letter] = columns[letter].sort(() => 0.5 - Math.random());
-            });
-        }
-
-        generateBingoBoard();
     </script>
 </body>
 </html>
