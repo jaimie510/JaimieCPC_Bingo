@@ -65,7 +65,7 @@
         }
         .bingo-board {
             display: grid;
-            grid-template-columns: repeat(5, 15);
+            grid-template-columns: repeat(5, 1fr);
             gap: 5px;
             width: 700px;
             margin: auto;
@@ -141,12 +141,35 @@
     <div class="bingo-message" id="bingoMessage">BINGO!</div>
 
     <script>
-        function showBingo() {
-            document.getElementById('bingoMessage').classList.add('show-bingo');
-            setTimeout(() => {
-                document.getElementById('bingoMessage').classList.remove('show-bingo');
-            }, 3000);
+        const bingoBoard = document.getElementById('bingoBoard');
+        const lastCalledContainer = document.getElementById('lastCalledContainer');
+        const bingoMessage = document.getElementById('bingoMessage');
+        let lastCalledNumbers = [];
+        const columns = {
+            B: Array.from({length: 15}, (_, i) => i + 1),
+            I: Array.from({length: 15}, (_, i) => i + 16),
+            N: Array.from({length: 15}, (_, i) => i + 31),
+            G: Array.from({length: 15}, (_, i) => i + 46),
+            O: Array.from({length: 15}, (_, i) => i + 61)
+        };
+
+        function generateBingoBoard() {
+            bingoBoard.innerHTML = '';
+            Object.keys(columns).forEach(letter => {
+                columns[letter].forEach(number => {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.innerText = number;
+                    cell.onclick = () => selectNumber(letter, number);
+                    bingoBoard.appendChild(cell);
+                });
+            });
         }
-    </script>
-</body>
-</html>
+
+        function selectNumber(letter, number) {
+            if (!lastCalledNumbers.some(n => n.letter === letter && n.number === number)) {
+                lastCalledNumbers.unshift({ letter, number });
+                if (lastCalledNumbers.length > 3) lastCalledNumbers.pop();
+                updateLast
+::contentReference[oaicite:1]{index=1}
+ 
