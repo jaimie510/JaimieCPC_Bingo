@@ -15,21 +15,20 @@
             padding: 10px;
         }
         h1 {
-            font-size: 38px;
+            font-size: 48px;
             color: #1f4e79;
         }
         .logo {
             max-width: 320px;
-            margin: 30px auto;
-            filter: invert(20%) sepia(98%) saturate(1000%) hue-rotate(180deg);
+            margin: 20px auto;
         }
         .last-called-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 20px;
-            height: 120px;
+            height: 150px;
         }
         .ball {
             width: 120px;
@@ -40,27 +39,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 42px;
             font-weight: bold;
             transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
         }
         .bingo-board {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            width: 600px;
+            gap: 5px;
+            width: 700px;
             margin: auto;
         }
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .letter {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1f4e79;
+            margin-bottom: 5px;
+        }
         .cell {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: white;
-            border: 3px solid #1f4e79;
-            font-size: 32px;
+            border: 2px solid #1f4e79;
+            font-size: 30px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 10px;
@@ -69,7 +79,7 @@
         .highlighted {
             background-color: #e63946 !important;
             color: white !important;
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
     </style>
 </head>
@@ -95,13 +105,20 @@
         function generateBingoBoard() {
             bingoBoard.innerHTML = '';
             Object.keys(columns).forEach(letter => {
+                let column = document.createElement('div');
+                column.classList.add('column');
+                let letterDiv = document.createElement('div');
+                letterDiv.classList.add('letter');
+                letterDiv.innerText = letter;
+                column.appendChild(letterDiv);
                 columns[letter].forEach(num => {
                     let cell = document.createElement('div');
                     cell.classList.add('cell');
-                    cell.innerText = `${letter}${num}`;
+                    cell.innerText = num;
                     cell.onclick = () => selectNumber(cell, letter, num);
-                    bingoBoard.appendChild(cell);
+                    column.appendChild(cell);
                 });
+                bingoBoard.appendChild(column);
             });
         }
 
